@@ -6,7 +6,8 @@ function start(videoElement) {
     throw new Error("Video element is required");
   }
 
-  webSocket = new WebSocket(`ws://localhost:8080`);
+  // webSocket = new WebSocket(`ws://localhost:8080`);
+  webSocket = new WebSocket(`wss://playersync.onrender.com`);
   webSocket.onopen = () => {
     console.log("WebSocket connection established");
   };
