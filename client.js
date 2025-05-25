@@ -58,6 +58,7 @@ function start(videoElement) {
   videoElement.addEventListener('play', () => {
     if (webSocket.readyState === WebSocket.OPEN) {
       skipEvents();
+      // todo: also send and update the current time (maybe only in pause?)
       webSocket.send(JSON.stringify({type: 'play'}));
     }
   });
@@ -65,6 +66,8 @@ function start(videoElement) {
   videoElement.addEventListener('pause', () => {
     if (webSocket.readyState === WebSocket.OPEN) {
       skipEvents();
+      // todo: also send and update the current time
+      // megatodo: collect all current times, takes the lowest, if it's too low compared to the others, update all
       webSocket.send(JSON.stringify({type: 'pause'}));
     }
   });
