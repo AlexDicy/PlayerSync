@@ -25,7 +25,7 @@ function sendToAllExceptSender(sender, message) {
   clients.forEach(client => {
     if (client !== sender) {
       try {
-        client.send(message);
+        client.send(message, { binary: false });
       } catch (error) {
         console.error('Error sending message to client:', error);
       }
