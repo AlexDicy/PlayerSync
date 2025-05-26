@@ -29,12 +29,14 @@ function start(videoElement) {
     switch (message.type) {
       case 'play':
         videoElement.play();
+        updateCurrentTime(message.currentTime);
         break;
       case 'pause':
         videoElement.pause();
+        updateCurrentTime(message.currentTime);
         break;
       case 'seek':
-        videoElement.currentTime = message.currentTime;
+        updateCurrentTime(message.currentTime);
         break;
       case 'ping':
         break;
@@ -58,17 +60,15 @@ function start(videoElement) {
   videoElement.addEventListener('play', () => {
     if (webSocket.readyState === WebSocket.OPEN) {
       skipEvents();
-      // todo: also send and update the current time (maybe only in pause?)
-      webSocket.send(JSON.stringify({type: 'play'}));
+      webSocket.send(JSON.stringify({type: 'play', currentTime: videoElement.currentTime}));
     }
   });
 
   videoElement.addEventListener('pause', () => {
     if (webSocket.readyState === WebSocket.OPEN) {
       skipEvents();
-      // todo: also send and update the current time
-      // megatodo: collect all current times, takes the lowest, if it's too low compared to the others, update all
-      webSocket.send(JSON.stringify({type: 'pause'}));
+      // todo: collect all current times, takes the lowest, if it's too low compared to the others, update all
+      webSocket.send(JSON.stringify({type: 'pause', currentTime: videoElement.currentTime}));
     }
   });
 
@@ -78,6 +78,12 @@ function start(videoElement) {
       webSocket.send(JSON.stringify({type: 'seek', currentTime: videoElement.currentTime}));
     }
   });
+
+  function updateCurrentTime(currentTime) {
+    if (Math.abs(videoElement.currentTime - currentTime) > 0.1) {
+      videoElement.currentTime = currentTime;
+    }
+  }
 }
 
 function skipEvents() {
